@@ -1,0 +1,76 @@
+type: edu
+files:
+- name: src/watermark/Main.kt
+  visible: true
+  text: |-
+    package watermark
+
+    import java.awt.image.BufferedImage
+    import java.io.File
+    import javax.imageio.ImageIO
+
+    fun main() {
+        println("Input the image filename:")
+        val fileName = readln()
+        println(WaterMark(fileName).getInfo())
+    }
+
+    class WaterMark(fileName: String) {
+        private var filesReady = false
+        var fileName: String = fileName
+            set(value) {
+                field = value
+                checkFile()
+            }
+        private var image: BufferedImage = BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB)
+            set(value) {
+                if (filesReady) field = value
+            }
+
+        init {
+            checkFile()
+        }
+
+        private val transparencies = mapOf<Int, String>(
+            1 to "OPAQUE",
+            2 to "BITMASK",
+            3 to "TRANSLUCENT",
+        )
+
+        private fun checkFile(){
+            val file = File(fileName)
+            filesReady = file.exists()
+            if (filesReady) image = ImageIO.read(file)
+        }
+
+        fun getInfo(): String {
+            return if (filesReady) {
+                "Image file: $fileName\n" +
+                "Width: ${image.width}\n" +
+                "Height: ${image.height}\n" +
+                "Number of components: ${image.colorModel.numComponents}\n" +
+                "Number of color components: ${image.colorModel.numColorComponents}\n" +
+                "Bits per pixel: ${image.colorModel.pixelSize}\n" +
+                "Transparency: ${transparencies[image.transparency]}"
+            } else "The file $fileName doesn't exist."
+        }
+    }
+  learner_created: false
+- name: test/out1.png
+  visible: true
+  learner_created: true
+- name: test/out2.png
+  visible: true
+  learner_created: true
+- name: test/out4.png
+  visible: true
+  learner_created: true
+- name: test/out3.png
+  visible: true
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/17148#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Fri, 30 Dec 2022 23:12:45 UTC"
+record: 4
